@@ -2,6 +2,8 @@
 
 Speaker recognition toolkit
 
+## This branch, esp2hyp, is to integrate TTS-related parts in ESPnet to Hyperion for spkid + tts research
+
 ## Cloning the repo
 
 - To clone the repo execute

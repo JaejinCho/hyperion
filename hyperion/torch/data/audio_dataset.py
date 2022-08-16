@@ -382,13 +382,15 @@ class AudioDataset(Dataset):
 
         r_list = [] # this is for dino's multiple augmentations (more than once) of a given sample
 
-        # to reduce overlap between 2 long chunks 
-        long_chunk_proc_cnt = 0
-        tmp = torch.rand(size=(5,))*(full_seq_length - chunk_length_list[0])
-        time_offset_long_chunks = [torch.min(tmp), torch.max(tmp)]
+        # to reduce overlap between 2 long chunks
+        reduce_overlap = (self.dinossl_reduce_overlap_prob > torch.rand(size=(1,)))
+        if reduce_overlap:
+            long_chunk_proc_cnt = 0
+            tmp = torch.rand(size=(5,))*(full_seq_length - chunk_length_list[0])
+            time_offset_long_chunks = [torch.min(tmp), torch.max(tmp)]
 
         for chunk_length in chunk_length_list: # full_seq_length, self.reverb_context are fixed within this for loop
-            if (long_chunk_proc_cnt < 2) and (self.dinossl_reduce_overlap_prob > tmp[0]):
+            if reduce_overlap and (long_chunk_proc_cnt < 2):
                 time_offset = time_offset_long_chunks[long_chunk_proc_cnt]
                 long_chunk_proc_cnt += 1
             else:
